@@ -1,7 +1,8 @@
 <table width="100%">
   <tr>
     <td>{{ header.name }} <br> {{ header.goalLife }}</td>
-    <td><img [src]="header.photoUrl" width="200" height="200" alt="Foto de perfil"></td>
+    <td><img [src]="header.photoUrl" width="200" height="200" alt="Foto de perfil"
+        style="object-fit: cover; border-radius: 50%;"></td>
     <td>
       {{ header.email }}<br>
       {{ header.phoneNumber }}<br>
