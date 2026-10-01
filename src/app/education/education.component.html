@@ -1,1 +1,6 @@
-<p>education works!</p>
+<ul>
+  <li *ngFor="let item of education">
+    <b>{{ item.preparatoria }}</b> <br>
+    {{ item.startDate }} - {{ item.endDate }} <i>{{ item.location }}</i>
+  </li>
+</ul>

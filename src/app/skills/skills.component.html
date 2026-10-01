@@ -1,1 +1,8 @@
-<p>skills works!</p>
+<ul>
+  <li *ngFor="let item of skills">
+    <b>Backend:</b> {{ item.backend }} <br>
+    <b>Database:</b> {{ item.database }} <br>
+    <b>Frontend:</b> {{ item.frontend }} <br>
+    <b>Project Manager:</b> {{ item.projectManager }}
+  </li>
+</ul>

@@ -1,1 +1,6 @@
-<p>languages works!</p>
+<ul>
+  <li *ngFor="let item of languages">
+    <b>Aprendido:</b> {{ item.learned }} <br>
+    <b>En proceso:</b> {{ item.process }}
+  </li>
+</ul>

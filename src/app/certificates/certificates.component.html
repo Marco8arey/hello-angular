@@ -1,1 +1,6 @@
-<p>certificates works!</p>
+<ul>
+  <li *ngFor="let item of certificates">
+    {{ item.scrum }} <br>
+    <a [href]="item.url" target="_blank" rel="noopener">{{ item.url }}</a>
+  </li>
+</ul>

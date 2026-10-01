@@ -146,3 +146,78 @@ npx ng build --configuration development
   entorno (requiere Chrome/ChromeHeadless). Se recomienda correrlos localmente.
 - **Componentes pendientes**: `education`, `skills`, `certificates`, `languages` e
   `interests` (y sus servicios) siguen vacíos, sin lógica ni conexión a Firestore.
+
+---
+
+## 6. Implementación del Tema 3 (servicios + Firestore)
+
+Fecha: 2026-10-01 (segunda tanda de cambios).
+
+Se implementaron las siete secciones del CV consumiendo sus colecciones de
+Firestore, siguiendo el documento `Angular_Tema3_OpenCode.md` pero **con la
+configuración de Firebase del usuario** (`cv-interfaces`), no la del instructor.
+
+### 6.1 Colecciones, campos y modelos
+
+Todos los campos son de tipo `string`. Los nombres respetan exactamente
+mayúsculas y singular/plural con los que se crearon en Firestore (Firestore
+distingue mayúsculas).
+
+| Colección        | Tipo de lectura | Campos (además de `id`)                                                    | Modelo                                    |
+| ---------------- | --------------- | -------------------------------------------------------------------------- | ----------------------------------------- |
+| `header`         | documento único | name, goalLife, photoUrl, email, phoneNumber, location, socialNetwork       | `models/header/header.model.ts`           |
+| `work-experience`| lista           | startDate, endDate, location, **Position** (P mayúscula), company, accomplishment | `models/work-experience/work-experience.model.ts` |
+| `education`      | lista           | preparatoria, startDate, endDate, location                                  | `models/education/education.model.ts`     |
+| `skills`         | lista           | backend, database, frontend, projectManager                                | `models/skills/skills.model.ts`           |
+| `certificates`   | lista           | scrum, url                                                                  | `models/certificates/certificates.model.ts`|
+| `languages`      | lista           | learned, process                                                            | `models/languages/languages.model.ts`     |
+| `interests`      | lista (plural)  | art, physicists                                                             | `models/interests/interests.model.ts`     |
+
+> Notas de nombres tal como los definió el usuario:
+> - `work-experience.Position` empieza con mayúscula; el template usa `{{ job.Position }}`.
+> - `work-experience.accomplishment` está en singular.
+> - `interests.physicists` (no `physics`) y la colección `interests` va en plural.
+> - `languages.process` (no `progress`).
+> - `certificates`: el campo `scrum` contiene el nombre del certificado y `url` el enlace.
+
+### 6.2 Servicios
+
+Cada servicio (`src/app/services/*-service/*.service.ts`) sigue el patrón de
+`HeaderService`: inyecta `AngularFirestore`, guarda la referencia de su colección
+en el constructor y la expone con un método `get*()`.
+
+### 6.3 Componentes y plantillas
+
+Cada componente inyecta su servicio en el constructor y se suscribe a
+`snapshotChanges()` con el operador `map` para construir la lista (o el
+documento único en el caso de `header`) y asignarla a una propiedad.
+
+- `header` -> `header: Header` (primer documento).
+- Resto -> `workExperience: WorkExperience[]`, `education: Education[]`,
+  `skills: Skills[]`, `certificates: Certificates[]`, `languages: Languages[]`,
+  `interests: Interests[]`.
+- Las plantillas usan `*ngFor` para las listas e interpolación `{{ }}`.
+
+### 6.4 Desviación respecto al documento (decisión de implementación)
+
+- El HTML de `header` se envolvió en una `<table>` propia, porque en
+  `app.component.html` el componente ya está dentro de un `<td colspan="2">` y no
+  es válido insertar un `<tr>` directamente dentro de un `<td>`.
+- El `app.module.ts` incluye `AngularFirestoreModule`, que el documento omitía y
+  cuya ausencia provoca `NullInjectorError: No provider for AngularFirestore!`.
+
+### 6.5 Pruebas
+
+Se actualizaron los 12 specs (6 servicios + 6 componentes) para proveer un
+`firestoreStub` de `AngularFirestore`, evitando `NullInjectorError` al ejecutar
+`ng test`. El stub devuelve `of([])` en `collection().snapshotChanges()`.
+
+### 6.6 Verificación
+
+```bash
+npx tsc -p tsconfig.spec.json --noEmit
+npx ng build --configuration development
+```
+
+Ambos finalizan sin errores. No se ejecutó `ng test` (requiere Chrome/ChromeHeadless
+en este entorno).

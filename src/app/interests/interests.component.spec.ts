@@ -1,6 +1,14 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { of } from 'rxjs';
 
 import { InterestsComponent } from './interests.component';
+
+const firestoreStub = {
+  collection: () => ({
+    snapshotChanges: () => of([])
+  })
+};
 
 describe('InterestsComponent', () => {
   let component: InterestsComponent;
@@ -8,7 +16,10 @@ describe('InterestsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [InterestsComponent]
+      declarations: [InterestsComponent],
+      providers: [
+        { provide: AngularFirestore, useValue: firestoreStub }
+      ]
     })
     .compileComponents();
 

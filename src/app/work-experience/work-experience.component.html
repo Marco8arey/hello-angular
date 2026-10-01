@@ -1,4 +1,9 @@
-<p>work-experience works!</p>
-<p>
-  {{workExperienceService.accesoWorkExperience}}
-  </p>
+<ul>
+  <li *ngFor="let job of workExperience">
+    {{ job.startDate }} - {{ job.endDate }} <i>{{ job.location }}</i> <br>
+    <b>{{ job.Position }}</b> <br>
+    {{ job.company }} <br>
+    Logros: <br>
+    {{ job.accomplishment }} <br>
+  </li>
+</ul>
