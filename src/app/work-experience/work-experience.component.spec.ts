@@ -31,4 +31,8 @@ describe('WorkExperienceComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should get the work-experience collection through the service', () => {
+    expect(component.workExperienceService.getWorkExperience()).toBeTruthy();
+  });
 });

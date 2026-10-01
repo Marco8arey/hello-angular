@@ -25,4 +25,8 @@ describe('WorkExperienceService', () => {
   it('should be created', () => {
     expect(service).toBeTruthy();
   });
+
+  it('should return the work-experience collection', () => {
+    expect(service.getWorkExperience()).toBeTruthy();
+  });
 });

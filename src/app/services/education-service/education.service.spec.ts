@@ -25,4 +25,8 @@ describe('EducationService', () => {
   it('should be created', () => {
     expect(service).toBeTruthy();
   });
+
+  it('should return the education collection', () => {
+    expect(service.getEducation()).toBeTruthy();
+  });
 });

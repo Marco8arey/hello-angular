@@ -221,3 +221,121 @@ npx ng build --configuration development
 
 Ambos finalizan sin errores. No se ejecutó `ng test` (requiere Chrome/ChromeHeadless
 en este entorno).
+
+---
+
+## 7. Implementación del Tema 4 - Pruebas (TDD)
+
+Fecha: 2026-10-01 (tercera tanda de cambios).
+
+### 7.1 Configuración de Karma
+
+`karma.conf.js` quedó con un único `browsers: ['ChromeHeadlessCI']` y su
+`customLaunchers` correspondiente. El archivo previo tenía la clave `browsers`
+duplicada, por lo que solo aplicaba la segunda.
+
+### 7.2 Clases de ejemplo TDD
+
+Se crearon clases con sus specs (contenido de ejemplo del tema, no relacionado con el CV):
+
+- `src/app/compute/compute.ts` + `compute.spec.ts` (suma, resta, multiplicación, división).
+- `src/app/greet/greet.ts` + `greet.spec.ts` (saludo con/sin nombre).
+- `src/app/currencies/currencies.ts` + `currencies.spec.ts` (conversión y redondeo).
+
+> Los PDFs solo muestran capturas de estos archivos; su implementación exacta no es
+> legible por texto. El contenido se diseñó como decisión de implementación.
+
+### 7.3 Pruebas de integración
+
+Cada uno de los 7 servicios y 7 componentes ahora tiene dos pruebas:
+
+- `should be created`.
+- `get*()` / `service.get*()` devuelve la colección (no es nulo).
+
+Con `firestoreStub` (mock de `AngularFirestore`) para no depender de la red.
+
+### 7.4 Pruebas unitarias y de integración: resultado
+
+No hay Chrome instalado en el equipo, pero sí **Microsoft Edge** (Chromium). Karma lanzó
+las pruebas apuntando `CHROME_BIN` a Edge:
+
+```bash
+export CHROME_BIN="/c/Program Files (x86)/Microsoft/Edge/Application/msedge.exe"
+npx ng test --no-watch --no-progress --browsers=ChromeHeadlessCI
+```
+
+Resultado: **42/42 pruebas SUCCESS**.
+
+### 7.5 Pruebas E2E con Cypress
+
+- Instalado con `ng add @cypress/schematic` (`@cypress/schematic` 4.3.0, `cypress` 16.1.1).
+- `cypress/e2e/spec.cy.ts` se adaptó para validar el CV real: layout, nombre del header
+  (leído de Firestore), y secciones de work-experience, skills, languages e interests.
+- El target `e2e` del schematic abre la GUI por defecto. Para ejecución automática se
+  forzó `watch=false`. Además, el builder del schematic cancelaba el build en este
+  entorno, por lo que se ejecutó Cypress directamente contra `ng serve`:
+
+```bash
+npx ng serve --port 4200 &
+for i in $(seq 1 60); do curl -s -o /dev/null http://localhost:4200 && break; sleep 2; done
+npx cypress run --e2e --browser electron
+```
+
+Resultado: **6/6 passing**.
+
+---
+
+## 8. Implementación del Tema 5 - Despliegue
+
+### 8.1 Versión distribuible en `docs`
+
+Se generó la versión de producción en `docs/` (requerida por GitHub Pages) y se movieron
+los archivos de `docs/browser` a la raíz de `docs`, como indica el documento:
+
+```bash
+npx ng build --output-path=docs
+mv docs/browser/* docs/
+rmdir docs/browser
+```
+
+> El build muestra una advertencia de presupuesto (795 kB vs 512 kB de warning), pero no
+> es un error y no impide el despliegue.
+
+### 8.2 Workflow de GitHub Actions
+
+Creado `.github/workflows/main.yml` a partir del documento, corrigiendo:
+
+- Indentación YAML (el original estaba desalineado y no es válido).
+- Versiones de acciones obsoletas: `actions/checkout@v2` -> `@v4`,
+  `actions/setup-node@v1` -> `@v4` con Node 20.
+- `npm run build --output-path=docs` -> `npm run build -- --output-path=docs`
+  (sin `--`, npm no pasa el flag al script).
+- Se agregó el `mv docs/browser/* docs/` después del build.
+
+El workflow corre tests, build, login a Docker Hub, crea la imagen `httpd` con el sitio y
+la publica en Docker Hub usando los secretos `DOCKER_USER` / `DOCKER_PASSWORD`.
+
+### 8.3 Docker local
+
+Docker está instalado (v29.8.1), pero **Docker Desktop no estaba iniciado**, por lo que no
+se pudieron ejecutar los comandos `docker pull httpd`, `docker run`, `docker cp` y
+`docker commit`. Los pasos quedan documentados en el tema y listos para ejecutar cuando el
+daemon esté activo.
+
+### 8.4 Pasos remotos (no ejecutables en local)
+
+Requieren credenciales/cuentas y no se realizaron:
+
+- Crear el repositorio `<usuario>.github.io` y `git push`.
+- Configurar GitHub Pages (Settings -> Pages -> branch master / carpeta docs).
+- Publicar la imagen en Docker Hub (`docker login` / `docker push`).
+- Desplegar en Render (Existing image + Docker Hub).
+
+### 8.5 Verificación
+
+```bash
+npx tsc -p tsconfig.spec.json --noEmit
+npx ng build --configuration development
+npx ng test --no-watch --no-progress --browsers=ChromeHeadlessCI   # 42/42
+npx cypress run --e2e --browser electron                          # 6/6
+```

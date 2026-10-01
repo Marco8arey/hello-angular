@@ -25,4 +25,8 @@ describe('LanguagesService', () => {
   it('should be created', () => {
     expect(service).toBeTruthy();
   });
+
+  it('should return the languages collection', () => {
+    expect(service.getLanguages()).toBeTruthy();
+  });
 });

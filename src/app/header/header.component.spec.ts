@@ -33,4 +33,8 @@ describe('HeaderComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should get the header collection through the service', () => {
+    expect(component.headerService.getHeader()).toBeTruthy();
+  });
 });

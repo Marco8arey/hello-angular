@@ -31,4 +31,8 @@ describe('SkillsComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should get the skills collection through the service', () => {
+    expect(component.skillsService.getSkills()).toBeTruthy();
+  });
 });

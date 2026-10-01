@@ -31,4 +31,8 @@ describe('EducationComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should get the education collection through the service', () => {
+    expect(component.educationService.getEducation()).toBeTruthy();
+  });
 });

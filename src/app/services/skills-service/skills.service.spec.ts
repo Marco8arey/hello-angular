@@ -25,4 +25,8 @@ describe('SkillsService', () => {
   it('should be created', () => {
     expect(service).toBeTruthy();
   });
+
+  it('should return the skills collection', () => {
+    expect(service.getSkills()).toBeTruthy();
+  });
 });

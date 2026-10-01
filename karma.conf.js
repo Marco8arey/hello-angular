@@ -1,5 +1,5 @@
 // Karma configuration file, see link for more information
-// https://karma-runner.github.io/1.0/config/configuration-file.html
+// https://karma-runner.github.io/latest/config/configuration-file.html
 
 module.exports = function (config) {
   config.set({
@@ -32,15 +32,14 @@ module.exports = function (config) {
       ]
     },
     reporters: ['progress', 'kjhtml'],
-    browsers: ['Chrome'],
     browsers: ['ChromeHeadlessCI'],
-     customLaunchers: {
+    customLaunchers: {
       ChromeHeadlessCI: {
-      base: 'ChromeHeadless',
-      flags: ['--no-sandbox']
+        base: 'ChromeHeadless',
+        flags: ['--no-sandbox']
       }
-     },
-     singleRun: false,
+    },
+    singleRun: false,
     restartOnFileChange: true
   });
 };

@@ -31,4 +31,8 @@ describe('InterestsComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should get the interests collection through the service', () => {
+    expect(component.interestsService.getInterests()).toBeTruthy();
+  });
 });

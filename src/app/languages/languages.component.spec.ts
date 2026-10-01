@@ -31,4 +31,8 @@ describe('LanguagesComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should get the languages collection through the service', () => {
+    expect(component.languagesService.getLanguages()).toBeTruthy();
+  });
 });

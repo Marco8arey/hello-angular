@@ -25,4 +25,8 @@ describe('CertificatesService', () => {
   it('should be created', () => {
     expect(service).toBeTruthy();
   });
+
+  it('should return the certificates collection', () => {
+    expect(service.getCertificates()).toBeTruthy();
+  });
 });

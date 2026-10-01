@@ -31,4 +31,8 @@ describe('CertificatesComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should get the certificates collection through the service', () => {
+    expect(component.certificatesService.getCertificates()).toBeTruthy();
+  });
 });
