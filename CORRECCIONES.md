@@ -339,3 +339,70 @@ npx ng build --configuration development
 npx ng test --no-watch --no-progress --browsers=ChromeHeadlessCI   # 42/42
 npx cypress run --e2e --browser electron                          # 6/6
 ```
+
+---
+
+## 9. Cierre T4 + T5 - resultados finales
+
+### 9.1 Cobertura de código (T4)
+
+```bash
+export CHROME_BIN="/c/Program Files (x86)/Microsoft/Edge/Application/msedge.exe"
+npx ng test --no-watch --no-progress --browsers=ChromeHeadlessCI --code-coverage
+```
+
+Reporte en `coverage/mycv/index.html`:
+
+- Statements: **94.53%** (121/128)
+- Branches: **100%** (5/5)
+- Functions: **86.27%** (44/51)
+- Lines: **100%** (120/120)
+
+### 9.2 Repositorio
+
+- GitHub: `https://github.com/Marco8arey/hello-angular` (rama `master`).
+- Nombre distinto a `<usuario>.github.io`, por lo que Pages es un *project page*.
+
+### 9.3 GitHub Actions
+
+- `.github/workflows/main.yml` con `actions/checkout@v5` y `actions/setup-node@v5`
+  (Node 24) para eliminar la advertencia de deprecación de Node 20.
+- Publica dos etiquetas de imagen: `:<sha>` y `:latest`.
+- Secrets configurados: `DOCKER_USER`, `DOCKER_PASSWORD`.
+- Runs verificados en verde: #1, #2, #3 y #4.
+
+### 9.4 GitHub Pages
+
+- Fuente: branch `master`, carpeta `/docs`.
+- URL: `https://marco8arey.github.io/hello-angular/`
+- Se compiló con `--base-href=/hello-angular/` y se agregó `docs/.nojekyll`.
+- Verificado: `index.html`, `main-*.js`, `styles-*.css` y `foto.jpg` responden HTTP 200.
+
+### 9.5 Docker Hub
+
+- Imagen: `dankisu/mycv` con etiquetas `:latest` y `:<sha>`.
+
+### 9.6 Render
+
+- Web Service desde "Existing image": `docker.io/dankisu/mycv:latest`.
+- Instance Type: Free. Environment Variables: vacío. Puerto detectado: 80 (httpd).
+- URL: `https://mycv-latest-xoqu.onrender.com/`
+- Para actualizar: **Manual Deploy -> Deploy latest image** (ya no hace falta cambiar
+  el tag a mano, porque el workflow publica `:latest`).
+
+### 9.7 Foto de perfil
+
+- La imagen se guardó en `public/foto.jpg` (así viaja en el build de Pages y en la
+  imagen Docker), en vez de usar un enlace compartido de Google Drive (que no es una
+  URL directa y no funciona en un `<img>`).
+- En Firestore, el campo `photoUrl` del documento `/header` debe valer exactamente
+  `foto.jpg`.
+- Plantilla del header: `<img>` con `object-fit: cover; border-radius: 50%` para avatar
+  circular sin deformar.
+
+### 9.8 URLs finales
+
+- GitHub Pages: `https://marco8arey.github.io/hello-angular/`
+- Render: `https://mycv-latest-xoqu.onrender.com/`
+- Docker Hub: `https://hub.docker.com/r/dankisu/mycv/tags`
+- Repositorio: `https://github.com/Marco8arey/hello-angular`
